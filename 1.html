@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -243,4 +244,251 @@ document.getElementById("clearBtn").addEventListener("click", () => {
 render();
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Scholarship System</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  color: #1e293b;
+}
+header {
+  background: #173b72;
+  color: white;
+  padding: 24px;
+  text-align: center;
+}
+main { max-width: 1050px; margin: 25px auto; padding: 16px; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+.card, .panel {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px #0000000c;
+  margin-bottom: 18px;
+}
+.number { font-size: 28px; font-weight: bold; color: #2459a9; }
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+label { font-size: 14px; font-weight: bold; }
+input, select, button {
+  width: 100%;
+  padding: 11px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  font-size: 15px;
+}
+button {
+  background: #2459a9;
+  color: white;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover { background: #173b72; }
+.actions { display: flex; gap: 8px; align-items: end; }
+.actions button { margin-top: 0; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+th { background: #edf3fc; }
+.status { font-weight: bold; }
+.eligible { color: #16803d; }
+.review { color: #a16207; }
+small { color: #64748b; }
+footer { text-align: center; padding: 20px; color: #64748b; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 School Scholarship System</h1>
+  <p>Scholarship Application & Eligibility Dashboard</p>
+</header>
+
+<main>
+  <div class="cards">
+    <div class="card">
+      <p>Total Applications</p>
+      <div class="number" id="total">0</div>
+    </div>
+    <div class="card">
+      <p>Meets Demo Criteria</p>
+      <div class="number" id="eligibleCount">0</div>
+    </div>
+    <div class="card">
+      <p>Needs Review</p>
+      <div class="number" id="reviewCount">0</div>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Student Scholarship Application</h2>
+    <form id="studentForm">
+      <label>Student Name
+        <input id="name" required placeholder="Enter full name">
+      </label>
+
+      <label>Class
+        <select id="grade" required>
+          <option value="">Select class</option>
+          <option>6</option><option>7</option><option>8</option>
+          <option>9</option><option>10</option><option>11</option>
+          <option>12</option>
+        </select>
+      </label>
+
+      <label>Marks Percentage
+        <input id="marks" type="number" min="0" max="100"
+               required placeholder="e.g. 85">
+      </label>
+
+      <label>Annual Family Income (₹)
+        <input id="income" type="number" min="0"
+               required placeholder="e.g. 150000">
+      </label>
+
+      <label>Documents Verified?
+        <select id="documents">
+          <option value="no">Not yet</option>
+          <option value="yes">Yes</option>
+        </select>
+      </label>
+
+      <div class="actions">
+        <button type="submit">Add Application</button>
+      </div>
+    </form>
+    <p><small>Demo criteria: marks ≥ 75% and annual income ≤ ₹2,00,000. These are example settings, not official scholarship rules.</small></p>
+  </section>
+
+  <section class="panel">
+    <h2>Application Dashboard</h2>
+    <div class="actions">
+      <input id="search" placeholder="Search student name..."
+             aria-label="Search student name">
+      <button type="button" id="clearBtn">Clear Demo Data</button>
+    </div>
+    <br>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Marks</th>
+            <th>Annual Income</th>
+            <th>Documents</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody id="studentRows"></tbody>
+      </table>
+    </div>
+    <p id="emptyMessage">No applications yet. Add a student above to begin.</p>
+  </section>
+</main>
+
+<footer>School Scholarship System | Hackathon Prototype</footer>
+
+<script>
+const students = [];
+const form = document.getElementById("studentForm");
+
+function getResult(student) {
+  if (student.marks < 75 || student.income > 200000) {
+    return "Does not meet demo criteria";
+  }
+  if (!student.documents) {
+    return "Pending verification";
+  }
+  return "Meets demo criteria";
+}
+
+function render() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const filtered = students.filter(s =>
+    s.name.toLowerCase().includes(query)
+  );
+
+  document.getElementById("total").textContent = students.length;
+  document.getElementById("eligibleCount").textContent =
+    students.filter(s => getResult(s) === "Meets demo criteria").length;
+  document.getElementById("reviewCount").textContent =
+    students.filter(s => getResult(s) === "Pending verification").length;
+
+  document.getElementById("studentRows").innerHTML = filtered.map(s => {
+    const result = getResult(s);
+    const statusClass = result === "Meets demo criteria"
+      ? "eligible"
+      : "review";
+
+    return `<tr>
+      <td>${escapeHTML(s.name)}</td>
+      <td>${escapeHTML(s.grade)}</td>
+      <td>${s.marks}%</td>
+      <td>₹${s.income.toLocaleString("en-IN")}</td>
+      <td>${s.documents ? "Verified" : "Pending"}</td>
+      <td class="status ${statusClass}">${result}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("emptyMessage").hidden = filtered.length > 0;
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+form.addEventListener("submit", event => {
+  event.preventDefault();
+
+  students.push({
+    name: document.getElementById("name").value.trim(),
+    grade: document.getElementById("grade").value,
+    marks: Number(document.getElementById("marks").value),
+    income: Number(document.getElementById("income").value),
+    documents: document.getElementById("documents").value === "yes"
+  });
+
+  form.reset();
+  render();
+});
+
+document.getElementById("search").addEventListener("input", render);
+
+document.getElementById("clearBtn").addEventListener("click", () => {
+  if (confirm("Delete all applications from this demo?")) {
+    students.length = 0;
+    render();
+  }
+});
+
+render();
+</script>
+</body>
+>>>>>>> 30adf474c11fb0a7bf4b7e88b5a89c0400e88cde
 </html>
